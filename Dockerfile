@@ -36,24 +36,20 @@ RUN cd /lib/systemd/system \
 
 # install python3.10 and openai emvironment
 COPY ./notebook /opt/notebook
-RUN <<EOF
-    apt-get update -y
-    apt-get install -y python3.10 python3.10-venv
-    (cd /opt/notebook; /usr/bin/python3.10 -m venv .venv)
-    . /opt/notebook/.venv/bin/activate
-    pip install -r /opt/notebook/requirements.txt 
-    deactivate
-    apt-get clean
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-EOF
+RUN apt-get update -y \
+    && apt-get install -y python3.10 python3.10-venv \
+    && (cd /opt/notebook; /usr/bin/python3.10 -m venv .venv) \
+    && . /opt/notebook/.venv/bin/activate \
+    && pip install -r /opt/notebook/requirements.txt \
+    && deactivate \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Development Environment
-RUN <<EOF
-    apt-get update -y
-    apt-get install -y git curl wget ssh
-    apt-get clean
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-EOF
+RUN apt-get update -y \
+    && apt-get install -y git curl wget ssh \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 CMD [ "/lib/systemd/systemd" ]
 
